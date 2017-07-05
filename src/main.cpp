@@ -55,11 +55,14 @@ int main (int argc, char **argv) {
     cout << endl << setw(3) << target << " ";
     /* Массив расстояний */
     for (int i=0; i < MATRIX_SIZE; ++i) {
-        cout << setw(3) << nodeDistance[i] << " ";
+        if (nodeDistance[i] != 16383)
+            cout << setw(3) << nodeDistance[i] << " ";
+        else
+            cout << setw(3) << "inf" << " ";
     }
     cout << endl << "\n Finished.";
 
-    std::cout << "\n Press enter to exit... "; 
+    std::cout << "\n Press enter to exit. "; 
     std::cin.get(); 
 
     return 0;

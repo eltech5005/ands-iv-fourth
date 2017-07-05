@@ -23,7 +23,7 @@ using namespace std;
 /* Описание класса "граф" */
 class graph {
 
-    unsigned int matrix[MATRIX_SIZE][MATRIX_SIZE];
+    int matrix[MATRIX_SIZE][MATRIX_SIZE];
 
     public:
         graph () { 
@@ -44,7 +44,7 @@ void graph :: generate () {
     for (int i=0; i<MATRIX_SIZE; ++i)
         for (int j=0; j<MATRIX_SIZE; ++j) {
             if ((i != j) && (rand() % 2))
-                matrix[i][j] = rand() % 100;
+                matrix[i][j] = abs(rand() % 100);
         }
 
 }
