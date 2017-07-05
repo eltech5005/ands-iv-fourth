@@ -62,6 +62,7 @@ int main (int argc, char **argv) {
     }
     cout << endl << "\n Finished.";
 
+    std::cin.ignore();
     std::cout << "\n Press enter to exit. "; 
     std::cin.get(); 
 
