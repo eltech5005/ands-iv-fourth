@@ -24,7 +24,7 @@ using namespace std;
 class graph {
 
     unsigned int matrix[MATRIX_SIZE][MATRIX_SIZE];
-    
+
     public:
         graph () { 
             for (int i = 0; i < MATRIX_SIZE; ++i)
@@ -33,8 +33,8 @@ class graph {
         };
         ~graph () {};
         void generate ();
-        void dejkstra (char nodeName);
         void show ();
+        int* dejkstra (char nodeName);
 
 };
 
@@ -76,83 +76,53 @@ void graph :: show () {
 }
 
 /* Функция применения алгоритма Дейкстры к графу */
-void graph :: dejkstra (char nodeName) {
+int* graph :: dejkstra (char nodeName) {
 
-    int nodeDistance[MATRIX_SIZE];
-    
+    int minindex, min;
+
+    /* Матрица расстояний */
+    int* nodeDistance = new int[MATRIX_SIZE];
+    for (int i=0; i < MATRIX_SIZE; ++i)
+        nodeDistance[i] = 16383;
+
+    /* Массив флагов найденности расстояний до вершин */
+    int used[MATRIX_SIZE];
+    for (int i = 0; i < MATRIX_SIZE; ++i)
+        used[i] = 1;
+
     nodeName=nodeName-NODE_NAME_START; // Приводим имя узла к числу
     nodeDistance[nodeName] = 0;        // Кратчайшее расстояние до самого себя = 0
 
-    /* Массив флагов найденности расстояний до вершин */
-    bool used[MATRIX_SIZE];
-    for (int i = 0; i < MATRIX_SIZE; ++i)
-        used[i] = false;
+    do {
+        minindex = 10000; // Наименьший номер элемента
+        min = 10000;      // Наименьший вес
 
-    /* Для каждой вершины орграфа */
-    for (int iteration = 0; iteration < MATRIX_SIZE; ++iteration) {
-
-        int node = -1;              // Номер обрабатываемой вершины
-        int nodeDistanceV = 16383;  // Расстояние по умолчанию
-
-        /* Выбираем вершину, кратчайшее расстояние до которой еще не найдено */
-        for (int i = 0; i < MATRIX_SIZE; ++i) {
-
-            if (used[i])
-                continue;
-
-            if (nodeDistanceV < nodeDistance[i])
-                continue;
-
-            node = i;
-            nodeDistanceV = nodeDistance[i];
-        }
-
-        /* Для всех ребёр */
-        for (int i = 0; i < matrix[node][MATRIX_SIZE]; ++i) {
-
-            if (matrix[node][i] != 0) {
-
-                int nodeTwo = i;
-                int nodeTwoWeight = matrix[node][i];
-
-                if (nodeDistance[node] + nodeTwoWeight < nodeDistance[nodeTwo]) {
-                    nodeDistance[nodeTwo] = nodeDistance[node] + nodeTwoWeight;
-                }
-                
+        for (int i = 0; i < MATRIX_SIZE; ++i) { 
+            /* Если вершина ещё не пройдена и вес меньше найденного минимального */
+            if ( (used[i] == 1) && (nodeDistance[i] < min) ) {
+                min = nodeDistance[i]; // Минимальный вес - найденный
+                minindex = i;          // Номер элемента для построения маршрута
             }
         }
+        
+        /* Добавляем найденный минимальный вес к текущему весу вершины
+         * и сравниваем с текущим минимальным весом вершины */
+        if (minindex != 10000) {
 
-        // Помечаем вершину v просмотренной, до нее найдено кратчайшее расстояние
-        used[node] = true;
+            for (int i = 0; i<MATRIX_SIZE; ++i) {
+                /* Если ребро существует */
+                if (matrix[minindex][i] > 0) {
 
-    }
-    
-    cout <<"Result: \n\n";
-    for (int i=0;i<MATRIX_SIZE;++i)
-        cout << nodeDistance[i] << " ";
-    
+                    int temp = min + matrix[minindex][i];
+                    if (temp < nodeDistance[i])
+                        nodeDistance[i] = temp;
+                }
+            }
+            used[minindex] = 0;
+        }
+
+    } while (minindex < 10000);
+
+    return nodeDistance;
+
 }
-
-//void GR :: Make(int G[ MaxV ][ MaxV ]) { //матрица → списки смежности
-//    int ls = 0, f;
-//    n = m = 0;
-//    for (int i=0; i<MaxV; i++) {
-//        LIST[ i ] = 0;
-//        G[ i ][ i ] = 0;
-//        f = 0;
-//        cout << '\n' << Ch(i) << ": ";
-//        for (int j = 0; j < MaxV; j++)
-//            if(G[ i ][ j ]) { 
-//                f++;
-//                Node *v = new Node;
-//                v->d = j; v->next = LIST[ i ]; LIST[ i ] = v;
-//                cout << Ch( j );
-//            } else 
-//                cout << "-";
-//        if( f )
-//            n++;
-//        m += f;
-//        if (!(( ++ls ) % 10));
-//    }
-//    cout << '\n' << "| V |=" << n << " | E |=" << m/2;
-//}

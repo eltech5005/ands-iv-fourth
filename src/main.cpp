@@ -20,7 +20,9 @@ int main (int argc, char **argv) {
 
     srand(time(NULL));
 
-    char target;
+    char target;                              // Обрабатываемый узел
+    char sym;                                 // Временный символ
+    int* nodeDistance = new int[MATRIX_SIZE]; // Массив расстояний
 
     /* Генерация случайного графа */
     graph processGraph;
@@ -39,11 +41,25 @@ int main (int argc, char **argv) {
         cout << " Given node does not exist. Will now exit. \n";
         return 1;
     }
+    
+    /* Применение алгоритма Дейкстры и получение массива расстояний */
     cout << " Processing node " << target << ".\n" << endl;
-    
-    processGraph.dejkstra(target);
-    
-    std::cout << "\n Press enter to continue... "; 
+    nodeDistance = processGraph.dejkstra(target);
+
+    /* Вывод результата работы алгоритма */
+    cout << " Shorest distances in graph from '" << target << "' to other nodes: \n" << endl << "   "; 
+    /* Заголовок таблицы*/
+    for (int i=0; i<MATRIX_SIZE; ++i)
+        cout << setw(3) << (sym = NODE_NAME_START+i) << " ";
+    /* Имя элемента */
+    cout << endl << setw(3) << target << " ";
+    /* Массив расстояний */
+    for (int i=0; i < MATRIX_SIZE; ++i) {
+        cout << setw(3) << nodeDistance[i] << " ";
+    }
+    cout << endl << "\n Finished.";
+
+    std::cout << "\n Press enter to exit... "; 
     std::cin.get(); 
 
     return 0;
